@@ -34,6 +34,7 @@ namespace CodeGraph
             m_position = position;
         }
 
+
         public virtual string OnProcess(CodeGraphAsset currentGraph)
         {
             CodeGraphNode nextNodeInFlow = currentGraph.GetNodeFromOutput(m_guid, 0);

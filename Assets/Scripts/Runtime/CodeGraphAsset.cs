@@ -29,10 +29,16 @@ namespace CodeGraph
             m_connections = new List<CodeGraphConnection>();
         }
 
+        /// <summary>
+        /// Adds each node in the graph to an m_NodeDictionary
+        /// </summary>
+        /// <param name="gameObject"></param>
         public void Init(GameObject gameObject)
         {
             this.gameObject = gameObject;
             m_NodeDictionary = new Dictionary<string, CodeGraphNode>();
+
+            //Replace Nodes with m_nodes?
             foreach(CodeGraphNode node in Nodes)
             {
                 m_NodeDictionary.Add(node.id, node);
@@ -49,6 +55,11 @@ namespace CodeGraph
             return startNodes[0];
         }
 
+        /// <summary>
+        /// gets relevant node based on passed nextNodeId parameter
+        /// </summary>
+        /// <param name="nextNodeId"></param>
+        /// <returns></returns>
         public CodeGraphNode GetNode(string nextNodeId)
         {
             if(m_NodeDictionary.TryGetValue(nextNodeId, out CodeGraphNode node))

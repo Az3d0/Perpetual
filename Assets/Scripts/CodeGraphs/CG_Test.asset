@@ -12,82 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c6ce71aae5f14549a351e43c3c83cdd, type: 3}
   m_Name: CG_Test
   m_EditorClassIdentifier: 
-  m_nodes:
-  - rid: 8510293788988801082
-  - rid: 8510293788988801083
-  - rid: 8510293821982244922
-  - rid: 8510293821982244923
-  m_connections:
-  - inputPort:
-      nodeId: 50bd13aa-8db4-4014-b990-cb29541af7da
-      portIndex: 1
-    outputPort:
-      nodeId: 685654c7-35b0-4aaa-972d-8294b1942474
-      portIndex: 0
-  - inputPort:
-      nodeId: 77662087-6630-4ed9-b568-06eed5570cd7
-      portIndex: 1
-    outputPort:
-      nodeId: 50bd13aa-8db4-4014-b990-cb29541af7da
-      portIndex: 0
-  - inputPort:
-      nodeId: 84e1ddbd-bfbc-4c4a-9452-31bf66ab6526
-      portIndex: 1
-    outputPort:
-      nodeId: 77662087-6630-4ed9-b568-06eed5570cd7
-      portIndex: 0
+  m_nodes: []
+  m_connections: []
   gameObject: {fileID: 0}
   references:
     version: 2
-    RefIds:
-    - rid: 8510293788988801082
-      type: {class: StartNode, ns: CodeGraph, asm: CodeGraph}
-      data:
-        m_guid: 685654c7-35b0-4aaa-972d-8294b1942474
-        m_position:
-          serializedVersion: 2
-          x: 381
-          y: 274
-          width: 75
-          height: 77
-        typeName: CodeGraph.StartNode, CodeGraph, Version=0.0.0.0, Culture=neutral,
-          PublicKeyToken=null
-    - rid: 8510293788988801083
-      type: {class: DebugLogNode, ns: CodeGraph, asm: CodeGraph}
-      data:
-        m_guid: 50bd13aa-8db4-4014-b990-cb29541af7da
-        m_position:
-          serializedVersion: 2
-          x: 478
-          y: 79
-          width: 206
-          height: 97
-        typeName: CodeGraph.DebugLogNode, CodeGraph, Version=0.0.0.0, Culture=neutral,
-          PublicKeyToken=null
-        logMessage: Hello World
-    - rid: 8510293821982244922
-      type: {class: DebugLogNode, ns: CodeGraph, asm: CodeGraph}
-      data:
-        m_guid: 77662087-6630-4ed9-b568-06eed5570cd7
-        m_position:
-          serializedVersion: 2
-          x: 728
-          y: 72
-          width: 205
-          height: 97
-        typeName: CodeGraph.DebugLogNode, CodeGraph, Version=0.0.0.0, Culture=neutral,
-          PublicKeyToken=null
-        logMessage: Hello Again
-    - rid: 8510293821982244923
-      type: {class: MoveNode, ns: CodeGraph, asm: CodeGraph}
-      data:
-        m_guid: 84e1ddbd-bfbc-4c4a-9452-31bf66ab6526
-        m_position:
-          serializedVersion: 2
-          x: 954
-          y: 278
-          width: 240
-          height: 97
-        typeName: CodeGraph.MoveNode, CodeGraph, Version=0.0.0.0, Culture=neutral,
-          PublicKeyToken=null
-        direction: {x: 0, y: 10, z: 0}
+    RefIds: []

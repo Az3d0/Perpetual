@@ -9,6 +9,8 @@ using UnityEngine.UIElements;
 
 namespace CodeGraph.Editor
 {
+
+    //Search window opens far too slow. Needs rework (@xddude comment on https://www.youtube.com/watch?v=iBukERGzEz0&ab_channel=GameDevGuide)
     public struct SearchContextElement
     {
         public object target { get; private set; }

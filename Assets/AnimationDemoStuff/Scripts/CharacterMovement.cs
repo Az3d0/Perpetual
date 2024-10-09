@@ -21,5 +21,4 @@ public class CharacterMovement : MonoBehaviour
         bool jumpInput = jumpAction.ToInputAction().IsPressed();
     }
 
-
 }

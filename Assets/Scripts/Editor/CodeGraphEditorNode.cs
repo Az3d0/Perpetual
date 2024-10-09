@@ -10,6 +10,9 @@ using UnityEngine;
 
 namespace CodeGraph.Editor
 {
+    /// <summary>
+    /// Class responsible for assembling nodes in the editor.
+    /// </summary>
     public class CodeGraphEditorNode : Node
     {
 
@@ -49,6 +52,7 @@ namespace CodeGraph.Editor
             if (info.hasFlowOutput)
             {
                 CreateFlowOutputPort();
+
             }
 
             if (info.hasFlowInput)

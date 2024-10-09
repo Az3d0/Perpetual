@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace CodeGraph
 {
+    /// <summary>
+    /// This script can be attached to gameobjects and executes behaviour during game runtime according to the graphasset assigned to it in the editor
+    /// </summary>
     public class CodeGraphObject : MonoBehaviour
     {
         [SerializeField]
@@ -29,7 +32,6 @@ namespace CodeGraph
 
             if(!string.IsNullOrEmpty(nextNodeId))
             {
-                //potential bug here:  use graphInstance
                 CodeGraphNode node = graphInstance.GetNode(nextNodeId);
 
                 ProcessAndMoveToNextNode(node);
