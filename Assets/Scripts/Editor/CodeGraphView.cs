@@ -99,6 +99,8 @@ namespace CodeGraph.Editor
             if(graphViewChange.elementsToRemove != null)
             {
                 List<CodeGraphEditorNode> nodes =graphViewChange.elementsToRemove.OfType<CodeGraphEditorNode>().ToList();
+
+                //remove node
                 if(nodes.Count > 0)
                 {
                     Undo.RecordObject(m_serializedObject.targetObject, "Removed Element From Graph");
@@ -108,10 +110,12 @@ namespace CodeGraph.Editor
                     }
                 }
 
+                //remove connection
                 foreach(Edge e in graphViewChange.elementsToRemove.OfType<Edge>())
                 {
                     RemoveConnection(e);
                 }
+
             }
             //on connection added
             if(graphViewChange.edgesToCreate != null)
@@ -135,11 +139,13 @@ namespace CodeGraph.Editor
 
             CodeGraphConnection connection = new CodeGraphConnection(inputNode.Node.id, inputIndex, outputNode.Node.id, outputIndex);
             m_codeGraph.Connections.Add(connection);
+            m_connectionDictionary.Add(edge, connection);
         }
         private void RemoveConnection(Edge e)
         {
             if(m_connectionDictionary.TryGetValue(e, out CodeGraphConnection connection))
             {
+                Debug.Log("removing node");
                 m_codeGraph.Connections.Remove(connection);
                 m_connectionDictionary.Remove(e);
             }

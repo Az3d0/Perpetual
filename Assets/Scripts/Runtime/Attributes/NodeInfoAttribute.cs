@@ -3,24 +3,31 @@ using UnityEngine;
 
 namespace CodeGraph
 {
+    /// <summary>
+    /// <para> This attribute defines the properties of nodes. </para>
+    /// <see cref="string"/> title, <see cref="string"/> menuItem, <see cref="int"/>  flowInputQuantity, <see cref="int"/>  flowOutputQuantity
+    /// </summary>
     public class NodeInfoAttribute : Attribute
     {
         private string m_nodeTitle;
         private string m_menuItem;
-        private bool m_hasFlowInput;
-        private bool m_hasFlowOutput;
+
+        private int m_flowInputQuantity;
+        private int m_flowOutputQuantity;
 
         public string title => m_nodeTitle;
         public string menuItem => m_menuItem;
-        public bool hasFlowInput => m_hasFlowInput;
-        public bool hasFlowOutput => m_hasFlowOutput;
 
-        public NodeInfoAttribute(string title, string menuItem = "", bool hasFlowInput = true, bool hasFlowOutput = true)
+        public int flowInputQuantity => m_flowInputQuantity;
+        public int flowOutputQuantity => m_flowOutputQuantity;
+
+
+        public NodeInfoAttribute(string title, string menuItem = "", int flowInputQuantity = 1, int flowOutputQuantity = 1)
         {
             m_nodeTitle = title;
             m_menuItem = menuItem;
-            m_hasFlowInput = hasFlowInput;
-            m_hasFlowOutput = hasFlowOutput;
+            m_flowInputQuantity = flowInputQuantity;
+            m_flowOutputQuantity = flowOutputQuantity;
         }
     }
 }

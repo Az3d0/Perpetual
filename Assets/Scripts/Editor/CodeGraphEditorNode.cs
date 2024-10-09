@@ -49,13 +49,11 @@ namespace CodeGraph.Editor
             this.name = typeinfo.Name;
 
             //We do this so output is always index 0;
-            if (info.hasFlowOutput)
+            for (int i = 0; i < info.flowOutputQuantity; i++)
             {
                 CreateFlowOutputPort();
-
             }
-
-            if (info.hasFlowInput)
+            for (int i = 0; i < info.flowInputQuantity; i++)
             {
                 CreateFlowInputPort();
             }

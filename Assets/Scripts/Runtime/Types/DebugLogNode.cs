@@ -7,7 +7,7 @@ namespace CodeGraph
     {
         [ExposedProperty()]
         public string logMessage;
-        public override string OnProcess(CodeGraphAsset currentGraph)
+        public override string OnProcess(CodeGraphAsset currentGraph, int outPortIndex = 0)
         {
             Debug.Log(logMessage);
             return base.OnProcess(currentGraph);

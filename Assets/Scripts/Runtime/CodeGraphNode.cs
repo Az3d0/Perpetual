@@ -35,9 +35,9 @@ namespace CodeGraph
         }
 
 
-        public virtual string OnProcess(CodeGraphAsset currentGraph)
+        public virtual string OnProcess(CodeGraphAsset currentGraph, int outPortIndex = 0)
         {
-            CodeGraphNode nextNodeInFlow = currentGraph.GetNodeFromOutput(m_guid, 0);
+            CodeGraphNode nextNodeInFlow = currentGraph.GetNodeFromOutput(m_guid, outPortIndex);
             if (nextNodeInFlow != null)
             {
                 return nextNodeInFlow.id;
