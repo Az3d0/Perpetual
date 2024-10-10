@@ -65,6 +65,16 @@ namespace CodeGraph.Editor
                     PropertyField field = DrawProperty(property.Name);
                     //field.RegisterValueChangeCallback(OnFieldChangeCallback);
                 }
+                if(property.GetCustomAttribute<ExposedInputPortPropertyAttribute>() is ExposedInputPortPropertyAttribute exposedInputPortPropertyAttribute)
+                {
+                    
+                    CreateCustomInputPort(exposedInputPortPropertyAttribute.PortType, exposedInputPortPropertyAttribute.PortName, exposedInputPortPropertyAttribute.ToolTip);
+                }
+                if (property.GetCustomAttribute<ExposedOutputPortPropertyAttribute>() is ExposedOutputPortPropertyAttribute exposedOutputPortPropertyAttribute)
+                {
+
+                    CreateCustomOutputPort(exposedOutputPortPropertyAttribute.PortType, exposedOutputPortPropertyAttribute.PortName, exposedOutputPortPropertyAttribute.ToolTip);
+                }
             }
 
             RefreshExpandedState();
@@ -101,8 +111,23 @@ namespace CodeGraph.Editor
             return field;
         }
 
+        private void CreateCustomInputPort(Type portType, string portName, string toolTip)
+        {
+            Port inputPort = InstantiatePort(Orientation.Horizontal, Direction.Input, Port.Capacity.Single, portType);
+            inputPort.portName = portName;
+            inputPort.tooltip = toolTip;
+            m_ports.Add(inputPort);
+            inputContainer.Add(inputPort);
+        }
 
-
+        private void CreateCustomOutputPort(Type portType, string portName, string toolTip)
+        {
+            Port outputPort = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, portType);
+            outputPort.portName = portName;
+            outputPort.tooltip = toolTip;
+            m_ports.Add(outputPort);
+            outputContainer.Add(outputPort);
+        }
         private void CreateFlowInputPort()
         {
             Port inputPort = InstantiatePort(Orientation.Horizontal, Direction.Input, Port.Capacity.Single, typeof(PortTypes.FlowPort));

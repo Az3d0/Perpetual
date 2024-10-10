@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace CodeGraph
@@ -5,8 +6,8 @@ namespace CodeGraph
     [NodeInfo("If", "Logic/If", 1, 2)]
     public class IfNode : CodeGraphNode
     {
-        // create property that takes input node
         [ExposedProperty()]
+        [ExposedInputPortProperty(typeof(bool), "Condition", "If statement")]
         public bool isTrue;
         public override string OnProcess(CodeGraphAsset currentGraph, int outPortIndex = 0)
         {

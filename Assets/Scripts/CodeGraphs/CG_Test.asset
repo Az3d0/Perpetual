@@ -13,81 +13,61 @@ MonoBehaviour:
   m_Name: CG_Test
   m_EditorClassIdentifier: 
   m_nodes:
-  - rid: 8510293881436766282
-  - rid: 8510293881436766285
-  - rid: 8510293881436766286
-  - rid: 8510293881436766287
+  - rid: 8510293893653463100
+  - rid: 8510293893653463101
+  - rid: 8510293893653463102
   m_connections:
   - inputPort:
-      nodeId: 5d6ca7b6-6f51-459a-afc6-1324972b892b
+      nodeId: d4f02439-d471-450e-bbac-30e4716fd8b5
+      portIndex: 3
+    outputPort:
+      nodeId: a9eab060-da6e-4d88-bc02-80f7d7b80ba7
+      portIndex: 0
+  - inputPort:
+      nodeId: d4f02439-d471-450e-bbac-30e4716fd8b5
       portIndex: 2
     outputPort:
-      nodeId: c4dc0796-e9bb-4e6a-8993-44d4e611b51a
+      nodeId: 5e5dee8e-9ece-45f0-b9b8-01af54a4f6df
       portIndex: 0
-  - inputPort:
-      nodeId: d111270c-0bb4-4970-b532-b4f924d88cdd
-      portIndex: 1
-    outputPort:
-      nodeId: 5d6ca7b6-6f51-459a-afc6-1324972b892b
-      portIndex: 0
-  - inputPort:
-      nodeId: 81cb68ab-cc13-4888-ba8f-cb89e78c8456
-      portIndex: 1
-    outputPort:
-      nodeId: 5d6ca7b6-6f51-459a-afc6-1324972b892b
-      portIndex: 1
   gameObject: {fileID: 0}
   references:
     version: 2
     RefIds:
-    - rid: 8510293881436766282
-      type: {class: StartNode, ns: CodeGraph, asm: CodeGraph}
+    - rid: 8510293893653463100
+      type: {class: BoolNode, ns: CodeGraph, asm: CodeGraph}
       data:
-        m_guid: c4dc0796-e9bb-4e6a-8993-44d4e611b51a
+        m_guid: a9eab060-da6e-4d88-bc02-80f7d7b80ba7
         m_position:
           serializedVersion: 2
-          x: 356
-          y: 243
-          width: 75
-          height: 77
-        typeName: CodeGraph.StartNode, CodeGraph, Version=0.0.0.0, Culture=neutral,
+          x: 379
+          y: 310
+          width: 286
+          height: 116
+        typeName: CodeGraph.BoolNode, CodeGraph, Version=0.0.0.0, Culture=neutral,
           PublicKeyToken=null
-    - rid: 8510293881436766285
+        isTrue: 0
+    - rid: 8510293893653463101
       type: {class: IfNode, ns: CodeGraph, asm: CodeGraph}
       data:
-        m_guid: 5d6ca7b6-6f51-459a-afc6-1324972b892b
+        m_guid: d4f02439-d471-450e-bbac-30e4716fd8b5
         m_position:
           serializedVersion: 2
-          x: 599
-          y: 241
+          x: 725
+          y: 148
           width: 150
           height: 120
         typeName: CodeGraph.IfNode, CodeGraph, Version=0.0.0.0, Culture=neutral,
           PublicKeyToken=null
         isTrue: 0
-    - rid: 8510293881436766286
-      type: {class: DebugLogNode, ns: CodeGraph, asm: CodeGraph}
+    - rid: 8510293893653463102
+      type: {class: StartNode, ns: CodeGraph, asm: CodeGraph}
       data:
-        m_guid: d111270c-0bb4-4970-b532-b4f924d88cdd
+        m_guid: 5e5dee8e-9ece-45f0-b9b8-01af54a4f6df
         m_position:
           serializedVersion: 2
-          x: 813
-          y: 205
-          width: 146
-          height: 97
-        typeName: CodeGraph.DebugLogNode, CodeGraph, Version=0.0.0.0, Culture=neutral,
+          x: 500
+          y: 150
+          width: 75
+          height: 77
+        typeName: CodeGraph.StartNode, CodeGraph, Version=0.0.0.0, Culture=neutral,
           PublicKeyToken=null
-        logMessage: True
-    - rid: 8510293881436766287
-      type: {class: DebugLogNode, ns: CodeGraph, asm: CodeGraph}
-      data:
-        m_guid: 81cb68ab-cc13-4888-ba8f-cb89e78c8456
-        m_position:
-          serializedVersion: 2
-          x: 862
-          y: 389
-          width: 0
-          height: 0
-        typeName: CodeGraph.DebugLogNode, CodeGraph, Version=0.0.0.0, Culture=neutral,
-          PublicKeyToken=null
-        logMessage: False
