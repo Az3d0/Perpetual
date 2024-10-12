@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.MemoryProfiler;
 using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace CodeGraph.Editor
 {
@@ -72,12 +74,37 @@ namespace CodeGraph.Editor
                 }
                 if (property.GetCustomAttribute<ExposedOutputPortPropertyAttribute>() is ExposedOutputPortPropertyAttribute exposedOutputPortPropertyAttribute)
                 {
-
                     CreateCustomOutputPort(exposedOutputPortPropertyAttribute.PortType, exposedOutputPortPropertyAttribute.PortName, exposedOutputPortPropertyAttribute.ToolTip);
                 }
-            }
+                if (property.GetCustomAttribute<ExposeFieldsFromScriptAttribute>() is ExposeFieldsFromScriptAttribute exposedFieldsFromScriptAttribute)
+                {
+                    PropertyField p = DrawProperty(property.Name);
 
+                    VisualElement root = p.parent;
+                    var scriptInspector = new Box();
+                    root.Add(scriptInspector);
+
+                    p.RegisterCallback<ChangeEvent<UnityEngine.Object>, VisualElement>(
+                        ScriptChanged, scriptInspector);
+                }
+            }
+            
             RefreshExpandedState();
+        }
+
+        private void ScriptChanged(ChangeEvent<UnityEngine.Object> evt, VisualElement scriptInspector)
+        {
+            scriptInspector.Clear();
+            Debug.Log("FieldValue changed");
+            var t = evt.newValue;
+            if (t == null)
+                return;
+            GameObject go = (GameObject)t;
+            foreach (Component comp in go.GetComponents<MonoBehaviour>())
+            {
+                scriptInspector.Add(new Label(comp.ToString()));
+                scriptInspector.Add(new InspectorElement(comp));
+            }
         }
 
         private void FetchSerializedProperty()
@@ -145,8 +172,6 @@ namespace CodeGraph.Editor
             m_ports.Add(m_outputPort);
             outputContainer.Add(m_outputPort);
         }
-
-
 
         public void SavePosition()
         {

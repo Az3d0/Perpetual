@@ -16,6 +16,7 @@ MonoBehaviour:
   - rid: 8510293893653463100
   - rid: 8510293893653463101
   - rid: 8510293893653463102
+  - rid: 8510293913929515067
   m_connections:
   - inputPort:
       nodeId: d4f02439-d471-450e-bbac-30e4716fd8b5
@@ -29,6 +30,12 @@ MonoBehaviour:
     outputPort:
       nodeId: 5e5dee8e-9ece-45f0-b9b8-01af54a4f6df
       portIndex: 0
+  - inputPort:
+      nodeId: 8f3592f5-a6b7-4ce7-b52f-a4fbf996d08d
+      portIndex: 1
+    outputPort:
+      nodeId: d4f02439-d471-450e-bbac-30e4716fd8b5
+      portIndex: 0
   gameObject: {fileID: 0}
   references:
     version: 2
@@ -39,12 +46,13 @@ MonoBehaviour:
         m_guid: a9eab060-da6e-4d88-bc02-80f7d7b80ba7
         m_position:
           serializedVersion: 2
-          x: 379
-          y: 310
-          width: 286
-          height: 116
+          x: 351
+          y: 273
+          width: 341
+          height: 257
         typeName: CodeGraph.BoolNode, CodeGraph, Version=0.0.0.0, Culture=neutral,
           PublicKeyToken=null
+        script: {fileID: 0}
         isTrue: 0
     - rid: 8510293893653463101
       type: {class: IfNode, ns: CodeGraph, asm: CodeGraph}
@@ -71,3 +79,16 @@ MonoBehaviour:
           height: 77
         typeName: CodeGraph.StartNode, CodeGraph, Version=0.0.0.0, Culture=neutral,
           PublicKeyToken=null
+    - rid: 8510293913929515067
+      type: {class: DebugLogNode, ns: CodeGraph, asm: CodeGraph}
+      data:
+        m_guid: 8f3592f5-a6b7-4ce7-b52f-a4fbf996d08d
+        m_position:
+          serializedVersion: 2
+          x: 976
+          y: 115
+          width: 146
+          height: 97
+        typeName: CodeGraph.DebugLogNode, CodeGraph, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
+        logMessage: 

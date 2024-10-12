@@ -59,6 +59,7 @@ namespace CodeGraph.Editor
 
             //Make sure this is after initial draw methods, otherwise draw methods will infinitely trigger the event.
             graphViewChanged += OnGraphViewChangedEvent;
+            
         }
 
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)

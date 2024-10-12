@@ -130,8 +130,8 @@ GameObject:
   - component: {fileID: 175967331}
   - component: {fileID: 175967330}
   - component: {fileID: 175967329}
-  - component: {fileID: 175967328}
   - component: {fileID: 175967333}
+  - component: {fileID: 175967328}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -254,6 +254,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isOn: 0
+  test: 
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
