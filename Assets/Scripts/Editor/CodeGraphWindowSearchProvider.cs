@@ -48,8 +48,8 @@ namespace CodeGraph.Editor
                         {
                             NodeInfoAttribute att = (NodeInfoAttribute)attribute;
                             var node = Activator.CreateInstance(type);
-                            if (string.IsNullOrEmpty(att.menuItem)) { continue; }
-                            elements.Add(new SearchContextElement(node, att.menuItem));
+                            if (string.IsNullOrEmpty(att.MenuItem)) { continue; }
+                            elements.Add(new SearchContextElement(node, att.MenuItem));
                         }
                     }
                 }

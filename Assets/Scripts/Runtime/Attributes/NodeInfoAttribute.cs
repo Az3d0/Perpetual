@@ -15,11 +15,11 @@ namespace CodeGraph
         private int m_flowInputQuantity;
         private int m_flowOutputQuantity;
 
-        public string title => m_nodeTitle;
-        public string menuItem => m_menuItem;
+        public string Title => m_nodeTitle;
+        public string MenuItem => m_menuItem;
 
-        public int flowInputQuantity => m_flowInputQuantity;
-        public int flowOutputQuantity => m_flowOutputQuantity;
+        public int FlowInputQuantity => m_flowInputQuantity;
+        public int FlowOutputQuantity => m_flowOutputQuantity;
 
 
         public NodeInfoAttribute(string title, string menuItem = "", int flowInputQuantity = 1, int flowOutputQuantity = 1)

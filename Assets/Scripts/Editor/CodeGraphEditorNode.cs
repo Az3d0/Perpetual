@@ -21,7 +21,13 @@ namespace CodeGraph.Editor
         private CodeGraphNode m_graphNode;
         private Port m_outputPort;
 
+        private List<Port> m_DynamicPorts;
+        //Change this later?
+        private Type m_nodeVariableType;
+
         private List<Port> m_ports;
+        
+        private Dictionary<string, Component> m_components;
 
         private SerializedObject m_serializedObject;
         private SerializedProperty m_serializedProperty;
@@ -39,10 +45,14 @@ namespace CodeGraph.Editor
             Type typeinfo = node.GetType();
             NodeInfoAttribute info = typeinfo.GetCustomAttribute<NodeInfoAttribute>();
 
-            title = info.title;
+            title = info.Title;
 
             m_ports = new List<Port>();
-            string[] depths = info.menuItem.Split('/');
+            m_DynamicPorts = new List<Port>();
+
+            m_components = new Dictionary<string, Component>();
+
+            string[] depths = info.MenuItem.Split('/');
             foreach (string depth in depths)
             {
                 this.AddToClassList(depth.ToLower().Replace(' ', '-'));
@@ -51,11 +61,11 @@ namespace CodeGraph.Editor
             this.name = typeinfo.Name;
 
             //We do this so output is always index 0;
-            for (int i = 0; i < info.flowOutputQuantity; i++)
+            for (int i = 0; i < info.FlowOutputQuantity; i++)
             {
                 CreateFlowOutputPort();
             }
-            for (int i = 0; i < info.flowInputQuantity; i++)
+            for (int i = 0; i < info.FlowInputQuantity; i++)
             {
                 CreateFlowInputPort();
             }
@@ -76,8 +86,10 @@ namespace CodeGraph.Editor
                 {
                     CreateCustomOutputPort(exposedOutputPortPropertyAttribute.PortType, exposedOutputPortPropertyAttribute.PortName, exposedOutputPortPropertyAttribute.ToolTip);
                 }
-                if (property.GetCustomAttribute<ExposeFieldsFromScriptAttribute>() is ExposeFieldsFromScriptAttribute exposedFieldsFromScriptAttribute)
+                if (property.GetCustomAttribute<ExposeVariablesFromGameObjectAttribute>() is ExposeVariablesFromGameObjectAttribute exposeVariablesFromGameObjectAttribute)
                 {
+                    m_nodeVariableType = exposeVariablesFromGameObjectAttribute.Type;
+                    Debug.Log(exposeVariablesFromGameObjectAttribute.Type);
                     PropertyField p = DrawProperty(property.Name);
 
                     VisualElement root = p.parent;
@@ -94,17 +106,51 @@ namespace CodeGraph.Editor
 
         private void ScriptChanged(ChangeEvent<UnityEngine.Object> evt, VisualElement scriptInspector)
         {
+            m_components.Clear();
             scriptInspector.Clear();
-            Debug.Log("FieldValue changed");
             var t = evt.newValue;
             if (t == null)
                 return;
             GameObject go = (GameObject)t;
+
+            List<string> ComponentList = new List<string>() { "none" };
+
             foreach (Component comp in go.GetComponents<MonoBehaviour>())
             {
-                scriptInspector.Add(new Label(comp.ToString()));
-                scriptInspector.Add(new InspectorElement(comp));
+                m_components.Add(comp.GetType().ToString(), comp);
+                ComponentList.Add(comp.GetType().ToString());
             }
+            DropdownField dropDown = new DropdownField("dropdown", ComponentList, 0);
+            var dropDownElementInspector = new Box();
+
+            scriptInspector.Add(dropDown);
+            scriptInspector.Add(dropDownElementInspector);
+
+            dropDown.RegisterCallback<ChangeEvent<string>, VisualElement>(DropdownFieldChanged, dropDownElementInspector);
+        }
+
+        private void DropdownFieldChanged(ChangeEvent<string> evt, VisualElement dropDownElementInspector)
+        {
+            dropDownElementInspector.Clear();
+            if (m_DynamicPorts.Count > 0)
+            {
+                foreach (Port port in m_DynamicPorts)
+                {
+                    outputContainer.Remove(port);
+                }
+                //also remove each potential connection between dynamic port and another port
+            }
+            m_DynamicPorts.Clear();
+            var t = evt.newValue;
+            if (t == null)
+                return;
+
+            m_components.TryGetValue(t, out Component selectedComponent);
+            MonoBehaviour monoComponent = (MonoBehaviour)selectedComponent;
+
+            CreateOutputPortsOfType(monoComponent, m_nodeVariableType);
+            dropDownElementInspector.Add(new InspectorElement(selectedComponent));
+
         }
 
         private void FetchSerializedProperty()
@@ -147,13 +193,32 @@ namespace CodeGraph.Editor
             inputContainer.Add(inputPort);
         }
 
-        private void CreateCustomOutputPort(Type portType, string portName, string toolTip)
+        private void CreateCustomOutputPort(Type portType, string portName, string toolTip = "default tooltip", bool isDynamic = false)
         {
             Port outputPort = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, portType);
             outputPort.portName = portName;
             outputPort.tooltip = toolTip;
-            m_ports.Add(outputPort);
+            if(isDynamic) { m_DynamicPorts.Add(outputPort); }
+            else { m_ports.Add(outputPort); }
             outputContainer.Add(outputPort);
+
+        }
+
+        private void CreateOutputPortsOfType(MonoBehaviour mono, Type type)
+        {
+            foreach(FieldInfo field in mono.GetType().GetFields())
+            {
+                if (type == null)
+                {
+                    Debug.Log("working");
+                    CreateCustomOutputPort(field.FieldType, field.Name, "value of variable", true);
+                }
+                else if (field.FieldType == type)
+                {
+                    CreateCustomOutputPort(field.FieldType, field.Name, "value of variable", true);
+                }
+
+            }
         }
         private void CreateFlowInputPort()
         {

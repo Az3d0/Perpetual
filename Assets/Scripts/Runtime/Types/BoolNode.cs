@@ -6,11 +6,11 @@ namespace CodeGraph
 
     public class BoolNode : CodeGraphNode
     {
-        [ExposeFieldsFromScript]
-        public GameObject script;
+        [ExposeVariablesFromGameObject(typeof(bool))]
+        public GameObject gameObject;
 
         [ExposedProperty]
-        [ExposedOutputPortProperty(typeof(bool), "value", "value of bool")]
+        [ExposedOutputPortProperty(typeof(bool), "manualBool", "toggle bool for manual testing")]
         public bool isTrue;
     }
 }
