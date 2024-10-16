@@ -10,6 +10,6 @@ namespace CodeGraph
 
         [ExposedProperty]
         [ExposedOutputPortProperty(typeof(string), "manualString", "string for manual testing")]
-        public string text;
+        public string manualString;
     }
 }

@@ -17,11 +17,12 @@ namespace CodeGraph.Editor
     /// </summary>
     public class CodeGraphEditorNode : Node
     {
+        private CodeGraphView m_codeGraphview;
 
         private CodeGraphNode m_graphNode;
         private Port m_outputPort;
 
-        private List<Port> m_DynamicPorts;
+        private List<Port> m_dynamicPorts;
         //Change this later?
         private Type m_nodeVariableType;
 
@@ -34,13 +35,15 @@ namespace CodeGraph.Editor
 
         public CodeGraphNode Node => m_graphNode;
         public List<Port> Ports => m_ports;
+        public CodeGraphView CodeGraphView => m_codeGraphview;
 
-        public CodeGraphEditorNode(CodeGraphNode node, SerializedObject codeGraphObject)
+        public CodeGraphEditorNode(CodeGraphNode node, SerializedObject codeGraphObject, CodeGraphView graphView)
         {
             this.AddToClassList("code-graph-node");
 
             m_serializedObject = codeGraphObject;
             m_graphNode = node;
+            m_codeGraphview = graphView;
 
             Type typeinfo = node.GetType();
             NodeInfoAttribute info = typeinfo.GetCustomAttribute<NodeInfoAttribute>();
@@ -48,8 +51,7 @@ namespace CodeGraph.Editor
             title = info.Title;
 
             m_ports = new List<Port>();
-            m_DynamicPorts = new List<Port>();
-
+            m_dynamicPorts = new List<Port>();
             m_components = new Dictionary<string, Component>();
 
             string[] depths = info.MenuItem.Split('/');
@@ -60,7 +62,7 @@ namespace CodeGraph.Editor
 
             this.name = typeinfo.Name;
 
-            //We do this so output is always index 0;
+            //Order ensures output is always index 0;
             for (int i = 0; i < info.FlowOutputQuantity; i++)
             {
                 CreateFlowOutputPort();
@@ -75,36 +77,26 @@ namespace CodeGraph.Editor
                 if(property.GetCustomAttribute<ExposedPropertyAttribute>() is ExposedPropertyAttribute exposedProperty)
                 {
                     PropertyField field = DrawProperty(property.Name);
-                    //field.RegisterValueChangeCallback(OnFieldChangeCallback);
                 }
-                if(property.GetCustomAttribute<ExposedInputPortPropertyAttribute>() is ExposedInputPortPropertyAttribute exposedInputPortPropertyAttribute)
+                if(property.GetCustomAttribute<ExposedInputPortPropertyAttribute>() is ExposedInputPortPropertyAttribute exposedInputPortProperty)
                 {
-                    
-                    CreateCustomInputPort(exposedInputPortPropertyAttribute.PortType, exposedInputPortPropertyAttribute.PortName, exposedInputPortPropertyAttribute.ToolTip);
+                    CreateCustomInputPort(exposedInputPortProperty.PortType, exposedInputPortProperty.PortName, exposedInputPortProperty.ToolTip);
                 }
-                if (property.GetCustomAttribute<ExposedOutputPortPropertyAttribute>() is ExposedOutputPortPropertyAttribute exposedOutputPortPropertyAttribute)
+                if (property.GetCustomAttribute<ExposedOutputPortPropertyAttribute>() is ExposedOutputPortPropertyAttribute exposedOutputPortProperty)
                 {
-                    CreateCustomOutputPort(exposedOutputPortPropertyAttribute.PortType, exposedOutputPortPropertyAttribute.PortName, exposedOutputPortPropertyAttribute.ToolTip);
+                    CreateCustomOutputPort(exposedOutputPortProperty.PortType, exposedOutputPortProperty.PortName, exposedOutputPortProperty.ToolTip);
                 }
-                if (property.GetCustomAttribute<ExposeVariablesFromGameObjectAttribute>() is ExposeVariablesFromGameObjectAttribute exposeVariablesFromGameObjectAttribute)
+                if (property.GetCustomAttribute<ExposeVariablesFromGameObjectAttribute>() is ExposeVariablesFromGameObjectAttribute exposeVariablesFromGameObject)
                 {
-                    m_nodeVariableType = exposeVariablesFromGameObjectAttribute.Type;
-                    Debug.Log(exposeVariablesFromGameObjectAttribute.Type);
-                    PropertyField p = DrawProperty(property.Name);
-
-                    VisualElement root = p.parent;
-                    var scriptInspector = new Box();
-                    root.Add(scriptInspector);
-
-                    p.RegisterCallback<ChangeEvent<UnityEngine.Object>, VisualElement>(
-                        ScriptChanged, scriptInspector);
+                    //not very resuable code atm
+                    CreateMultiStepVariableSelector(property, exposeVariablesFromGameObject);
                 }
             }
             
             RefreshExpandedState();
         }
 
-        private void ScriptChanged(ChangeEvent<UnityEngine.Object> evt, VisualElement scriptInspector)
+        private void ObjectChanged(ChangeEvent<UnityEngine.Object> evt, VisualElement scriptInspector)
         {
             m_components.Clear();
             scriptInspector.Clear();
@@ -127,24 +119,36 @@ namespace CodeGraph.Editor
             scriptInspector.Add(dropDownElementInspector);
 
             dropDown.RegisterCallback<ChangeEvent<string>, VisualElement>(DropdownFieldChanged, dropDownElementInspector);
+
+            //trigger callback once to refresh list of connections and ports
+            DropdownFieldChanged(new ChangeEvent<string>(), dropDownElementInspector);
         }
 
         private void DropdownFieldChanged(ChangeEvent<string> evt, VisualElement dropDownElementInspector)
         {
+            //clear out previous data
             dropDownElementInspector.Clear();
-            if (m_DynamicPorts.Count > 0)
+            if (m_dynamicPorts.Count > 0)
             {
-                foreach (Port port in m_DynamicPorts)
+                List<GraphElement> elementsToRemove = new List<GraphElement>();
+                foreach (Port port in m_dynamicPorts)
                 {
+                    foreach (Edge edge in port.connections)
+                    {
+                        elementsToRemove.Add(edge);
+                        edge.input.Disconnect(edge);
+                        edge.RemoveAt(0);
+                    }
                     outputContainer.Remove(port);
                 }
-                //also remove each potential connection between dynamic port and another port
+                UpdateCodeGraphView(elementsToRemove);
             }
-            m_DynamicPorts.Clear();
+            m_dynamicPorts.Clear();
             var t = evt.newValue;
             if (t == null)
                 return;
 
+            //Set up new data
             m_components.TryGetValue(t, out Component selectedComponent);
             MonoBehaviour monoComponent = (MonoBehaviour)selectedComponent;
 
@@ -153,6 +157,14 @@ namespace CodeGraph.Editor
 
         }
 
+
+        private void UpdateCodeGraphView(List<GraphElement> elementsToRemove)
+        {
+            GraphViewChange graphViewChange = new GraphViewChange();
+            graphViewChange.elementsToRemove = elementsToRemove;
+
+            m_codeGraphview.graphViewChanged?.Invoke(graphViewChange);
+        }
         private void FetchSerializedProperty()
         {
             SerializedProperty nodes = m_serializedObject.FindProperty("m_nodes");
@@ -198,7 +210,7 @@ namespace CodeGraph.Editor
             Port outputPort = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, portType);
             outputPort.portName = portName;
             outputPort.tooltip = toolTip;
-            if(isDynamic) { m_DynamicPorts.Add(outputPort); }
+            if(isDynamic) { m_dynamicPorts.Add(outputPort); }
             else { m_ports.Add(outputPort); }
             outputContainer.Add(outputPort);
 
@@ -206,18 +218,17 @@ namespace CodeGraph.Editor
 
         private void CreateOutputPortsOfType(MonoBehaviour mono, Type type)
         {
+            if(mono == null) return;
             foreach(FieldInfo field in mono.GetType().GetFields())
             {
                 if (type == null)
                 {
-                    Debug.Log("working");
-                    CreateCustomOutputPort(field.FieldType, field.Name, "value of variable", true);
+                    CreateCustomOutputPort(field.FieldType, field.Name, $"type of {field.FieldType}", true);
                 }
                 else if (field.FieldType == type)
                 {
-                    CreateCustomOutputPort(field.FieldType, field.Name, "value of variable", true);
+                    CreateCustomOutputPort(field.FieldType, field.Name, $"type of {field.FieldType}", true);
                 }
-
             }
         }
         private void CreateFlowInputPort()
@@ -231,11 +242,25 @@ namespace CodeGraph.Editor
 
         private void CreateFlowOutputPort()
         {
-            m_outputPort = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, typeof(PortTypes.FlowPort));
-            m_outputPort.portName = "Out";
-            m_outputPort.tooltip = "The flow output";
-            m_ports.Add(m_outputPort);
-            outputContainer.Add(m_outputPort);
+            Port outputPort = InstantiatePort(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, typeof(PortTypes.FlowPort));
+            outputPort.portName = "Out";
+            outputPort.tooltip = "The flow output";
+            m_ports.Add(outputPort);
+            outputContainer.Add(outputPort);
+        }
+
+        private void CreateMultiStepVariableSelector(FieldInfo property, ExposeVariablesFromGameObjectAttribute exposeVariablesFromGameObject)
+        {
+            //replace this in the future as it could cause issues in cases where multiple types of variabels are present
+            m_nodeVariableType = exposeVariablesFromGameObject.Type;
+            PropertyField p = DrawProperty(property.Name);
+
+            VisualElement root = p.parent;
+            var scriptInspector = new Box();
+            root.Add(scriptInspector);
+
+            p.RegisterCallback<ChangeEvent<UnityEngine.Object>, VisualElement>(
+                ObjectChanged, scriptInspector);
         }
 
         public void SavePosition()

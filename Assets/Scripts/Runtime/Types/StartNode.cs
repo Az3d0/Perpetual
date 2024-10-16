@@ -7,7 +7,6 @@ namespace CodeGraph
     {
         public override string OnProcess(CodeGraphAsset currentGraph, int outPortIndex = 0)
         {
-            Debug.Log("Hello World. Start!");
             return base.OnProcess(currentGraph);
         }
     }

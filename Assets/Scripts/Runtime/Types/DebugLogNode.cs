@@ -6,6 +6,7 @@ namespace CodeGraph
     public class DebugLogNode : CodeGraphNode
     {
         [ExposedProperty()]
+        [ExposedInputPortProperty(typeof(string), "string", "string")]
         public string logMessage;
         public override string OnProcess(CodeGraphAsset currentGraph, int outPortIndex = 0)
         {

@@ -199,6 +199,7 @@ namespace CodeGraph.Editor
 
         private void ShowSearchWindow(NodeCreationContext obj)
         {
+            Debug.Log("search window opened");
             m_searchProvider.target = (VisualElement)focusController.focusedElement;
             SearchWindow.Open(new SearchWindowContext(obj.screenMousePosition), m_searchProvider);
         }
@@ -217,7 +218,7 @@ namespace CodeGraph.Editor
         {
             node.typeName = node.GetType().AssemblyQualifiedName;
 
-            CodeGraphEditorNode editorNode = new CodeGraphEditorNode(node, m_serializedObject);
+            CodeGraphEditorNode editorNode = new CodeGraphEditorNode(node, m_serializedObject, this);
             editorNode.SetPosition(node.position);
             m_graphNodes.Add(editorNode);
             m_nodeDictionary.Add(node.id, editorNode);
@@ -229,6 +230,17 @@ namespace CodeGraph.Editor
         {
             m_serializedObject.Update();
             this.Bind(m_serializedObject);
+        }
+
+        //custom right click menu
+        public override void BuildContextualMenu(ContextualMenuPopulateEvent evt) 
+        {
+            //do something like this (read up on documentation):
+            //if(evt.target is GraphView)
+            //{
+            //    evt.menu.AppendAction("Add Variable")
+            //}
+            base.BuildContextualMenu(evt);
         }
     }
 }
