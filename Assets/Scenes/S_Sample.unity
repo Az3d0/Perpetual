@@ -253,7 +253,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6dfff348be816c047886fca266b0b27c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  go: {fileID: 2110779410}
   isOn: 1
   test: test message
 --- !u!1 &330585543

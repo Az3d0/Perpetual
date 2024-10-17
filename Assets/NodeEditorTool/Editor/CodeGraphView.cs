@@ -38,7 +38,7 @@ namespace CodeGraph.Editor
             this.nodeCreationRequest = ShowSearchWindow;
 
             //Styling dictated by USS file. Currently included styles: grid
-            StyleSheet style = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Scripts/Editor/USS/CodeGraphEditor.uss");
+            StyleSheet style = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/NodeEditorTool/Editor/USS/CodeGraphEditor.uss");
             styleSheets.Add(style);
 
             //Add GridBackground as a child of RootVisualElement/CodeGraphView/VisualElement
