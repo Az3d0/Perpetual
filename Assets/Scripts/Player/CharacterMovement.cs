@@ -1,9 +1,10 @@
 using System;
+using System.ComponentModel;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CharacterController))]
-[RequireComponent (typeof(Animator))]
+[RequireComponent(typeof(Animator))]
 public class CharacterMovement : MonoBehaviour
 {
     private InputSystem_Actions m_inputActions;
@@ -33,7 +34,7 @@ public class CharacterMovement : MonoBehaviour
 
     private void Update()
     {
-        m_characterController.Move(m_playerMovementDirection * m_walkSpeed * Time.deltaTime);
+        m_characterController.Move(AdjustedVelocityToSlope(m_playerMovementDirection) * m_walkSpeed * Time.deltaTime);
 
         DeltaPlayerMovement = transform.position - m_lastPlayerPosition;
         m_lastPlayerPosition = transform.position;
@@ -60,12 +61,16 @@ public class CharacterMovement : MonoBehaviour
 
     private void OnMoveActionPerformed(InputAction.CallbackContext context)
     {
-        Vector2 movementInput = context.ReadValue<Vector2>();
+
+        HandleMovement(context.ReadValue<Vector2>());
+    }
+
+    private void HandleMovement(Vector2 movementInput)
+    {
         m_playerMovementDirection = new Vector3(movementInput.x, 0, movementInput.y);
         m_isMoving = movementInput.x != 0 || movementInput.y != 0;
         m_animator.SetBool("isWalking", IsMoving);
     }
-
     private void HandleRotation()
     {
         Quaternion currentRotation = transform.rotation;
@@ -91,5 +96,20 @@ public class CharacterMovement : MonoBehaviour
             gravity = -0.1f;
             m_playerMovementDirection.y += gravity;
         }
+    }
+
+    private Vector3 AdjustedVelocityToSlope(Vector3 velocity)
+    {
+        var ray = new Ray(transform.position, Vector3.down);
+
+        if(Physics.Raycast(ray, out RaycastHit hitInfo, m_characterController.height / 2 + 0.2f))
+        {
+            var slopeRotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
+            var adjustedVelocity = slopeRotation * velocity;
+
+            if (adjustedVelocity.y < 0)
+            { return adjustedVelocity; }
+        }
+        return velocity;
     }
 }
