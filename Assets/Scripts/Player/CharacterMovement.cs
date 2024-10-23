@@ -1,5 +1,8 @@
+using JetBrains.Annotations;
 using System;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,15 +13,20 @@ public class CharacterMovement : MonoBehaviour
     private InputSystem_Actions m_inputActions;
     private CharacterController m_characterController;
     private Animator m_animator;
+    private Ray m_slopeCheckRay;
 
     private Vector3 m_playerMovementDirection;
     private Vector3 m_lastPlayerPosition;
+    private float m_slopeAngle;
+
     private bool m_isMoving;
 
     [SerializeField] private float m_walkSpeed = 1;
     [SerializeField] private float m_rotationSpeed = 1;
 
     public Vector3 PlayerMovementDirection => m_playerMovementDirection;
+
+    [HideInInspector] 
     public Vector3 DeltaPlayerMovement;
     public float WalkSpeed => m_walkSpeed;
     public float RotationSpeed => m_rotationSpeed;
@@ -29,11 +37,12 @@ public class CharacterMovement : MonoBehaviour
         m_animator = GetComponent<Animator>();
         m_lastPlayerPosition = transform.position;
 
-        SubscribeToEventActions();
+        SubscribeToInputActions();
     }
-
     private void Update()
     {
+        m_slopeAngle = UpdateSlopeAngle();
+
         m_characterController.Move(AdjustedVelocityToSlope(m_playerMovementDirection) * m_walkSpeed * Time.deltaTime);
 
         DeltaPlayerMovement = transform.position - m_lastPlayerPosition;
@@ -41,33 +50,44 @@ public class CharacterMovement : MonoBehaviour
 
         HandleRotation();
         HandleGravity();
+
+    }
+    public float UpdateSlopeAngle()
+    {
+        m_slopeCheckRay = new Ray(transform.position, Vector3.down);
+        if (Physics.Raycast(m_slopeCheckRay, out RaycastHit hitInfo, m_characterController.height / 2 + 0.2f))
+        {
+            Debug.DrawRay(hitInfo.point, hitInfo.normal, Color.yellow);
+            return Mathf.Atan(Mathf.Sqrt(Mathf.Pow(hitInfo.normal.x, 2) + Mathf.Pow(hitInfo.normal.z, 2)) / hitInfo.normal.y) * Mathf.Rad2Deg;
+        }
+        return 180;
     }
 
-    private void SubscribeToEventActions()
+    private void SubscribeToInputActions()
     {
         m_inputActions = new InputSystem_Actions();
         m_inputActions.Enable();
 
-        m_inputActions.Player.Move.performed += OnMoveActionPerformed;
-        m_inputActions.Player.Move.canceled += OnMoveActionPerformed;
-        m_inputActions.Player.Jump.started += OnJumpActionStarted;
-
+        m_inputActions.Player.Move.performed += OnMoveAction;
+        m_inputActions.Player.Move.canceled += OnMoveAction;
+        m_inputActions.Player.Jump.started += OnJumpAction;
     }
 
-    private void OnJumpActionStarted(InputAction.CallbackContext context)
+    private void OnJumpAction(InputAction.CallbackContext context)
     {
         bool isJumping = context.ReadValueAsButton();
     }
 
-    private void OnMoveActionPerformed(InputAction.CallbackContext context)
+    private void OnMoveAction(InputAction.CallbackContext context)
     {
-
         HandleMovement(context.ReadValue<Vector2>());
     }
 
+    //change "handler" naming?
     private void HandleMovement(Vector2 movementInput)
     {
-        m_playerMovementDirection = new Vector3(movementInput.x, 0, movementInput.y);
+        m_playerMovementDirection = new Vector3(movementInput.x, 0, movementInput.y).ToIso();
+
         m_isMoving = movementInput.x != 0 || movementInput.y != 0;
         m_animator.SetBool("isWalking", IsMoving);
     }
@@ -98,17 +118,17 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
+
     private Vector3 AdjustedVelocityToSlope(Vector3 velocity)
     {
-        var ray = new Ray(transform.position, Vector3.down);
-
-        if(Physics.Raycast(ray, out RaycastHit hitInfo, m_characterController.height / 2 + 0.2f))
+        if(Physics.Raycast(m_slopeCheckRay, out RaycastHit hitInfo, m_characterController.height / 2 + 0.2f))
         {
             var slopeRotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
             var adjustedVelocity = slopeRotation * velocity;
 
+            Debug.DrawRay(hitInfo.point, adjustedVelocity, Color.red);
             if (adjustedVelocity.y < 0)
-            { return adjustedVelocity; }
+                 return adjustedVelocity; 
         }
         return velocity;
     }
