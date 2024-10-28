@@ -1,6 +1,8 @@
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
@@ -9,6 +11,7 @@ public class RigController : MonoBehaviour
 
     [SerializeField]
     private List<TerrainDetectorRay> m_TerrainDetectorRays;
+    private List<LimbIKControllerRay> m_IKControllerRays;
 
     [SerializeField] 
     bool m_debugMode;
@@ -24,6 +27,8 @@ public class RigController : MonoBehaviour
     private void Awake()
     {
         ActiveRayHeightChanged += OnActiveRayHeightChanged;
+
+        m_IKControllerRays = new List<LimbIKControllerRay>();
         m_animator = GetComponent<Animator>();
         TryGetComponent<CharacterMovement>(out m_characterMovement);
         if (m_characterMovement == null)
@@ -34,7 +39,14 @@ public class RigController : MonoBehaviour
         foreach(TerrainDetectorRay ray in m_TerrainDetectorRays)
         {
             ray.RigController = this;
-            ray.Animator = m_animator;
+
+            Type type = ray.GetType();
+
+            if(type == typeof(LimbIKControllerRay))
+            {
+                Debug.Log(ray.name);
+                m_IKControllerRays.Add((LimbIKControllerRay)ray);
+            }
         }
     }
     void Update()
@@ -71,10 +83,16 @@ public class RigController : MonoBehaviour
         }
     }
 
-
-    public void FootIK(AvatarIKGoal controlledFoot, RaycastHit hitinfo)
+    private void OnAnimatorIK(int layerIndex)
     {
+        if (!m_animator) return;
+
+        foreach(LimbIKControllerRay ray in m_IKControllerRays)
+        {
+            ray.HandleLimbIK(m_animator);
+        }
     }
+
     public enum ActiveRayHeightEnum
     {
         None,

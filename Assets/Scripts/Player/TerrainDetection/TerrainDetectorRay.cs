@@ -13,6 +13,8 @@ public class TerrainDetectorRay : MonoBehaviour
     private RayDirectionEnum m_rayDirection = RayDirectionEnum.Forward;
     [SerializeField] 
     private float m_rayLength = 0.5f;
+    [SerializeField]
+    protected LayerMask m_layerMask;
 
     [HideInInspector]
     public Vector3 RayDirectionVector;
@@ -21,8 +23,6 @@ public class TerrainDetectorRay : MonoBehaviour
     //assign this by adding TerrainDetectorRays to RigController
     [HideInInspector]
     public RigController RigController;
-    [HideInInspector]
-    public Animator Animator;
     public Ray Ray => m_ray;
     public RaycastHit Hitinfo => m_hitinfo;
     public RayDirectionEnum RayDirection => m_rayDirection;
@@ -48,7 +48,7 @@ public class TerrainDetectorRay : MonoBehaviour
     {
         m_ray = new Ray(transform.position, RayDirectionVector);
 
-        if (Physics.Raycast(m_ray, out RaycastHit hitInfo, m_rayLength))
+        if (Physics.Raycast(m_ray, out RaycastHit hitInfo, m_rayLength, m_layerMask))
         {
             if(hitInfo.collider != null)
             {
@@ -56,10 +56,18 @@ public class TerrainDetectorRay : MonoBehaviour
             }
         }
 
-        if (RigController.DebugMode)
+        if (RigController)
         {
-            EnableDebugMode(m_ray);
+            if (RigController.DebugMode)
+            {
+                EnableDebugMode(m_ray);
+            }
         }
+        else
+        {
+            Debug.LogWarning($"Rigcontroller not assigned to {name}");
+        }
+
 
     }
 

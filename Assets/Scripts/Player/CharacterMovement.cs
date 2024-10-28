@@ -6,14 +6,15 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(CharacterController))]
+//[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(CapsuleCollider))]
 [RequireComponent (typeof(Rigidbody))]
 [RequireComponent(typeof(Animator))]
 public class CharacterMovement : MonoBehaviour
 {
     private InputSystem_Actions m_inputActions;
     //private CharacterController m_characterController;
-    private Rigidbody m_Rigidbody;
+    private Rigidbody m_rigidbody;
     private Animator m_animator;
     private Ray m_slopeCheckRay;
 
@@ -35,7 +36,7 @@ public class CharacterMovement : MonoBehaviour
     public bool IsMoving => m_isMoving;
     private void Awake()
     {
-        m_Rigidbody = GetComponent<Rigidbody>();
+        m_rigidbody = GetComponent<Rigidbody>();
         //m_characterController = GetComponent<CharacterController>();
         m_animator = GetComponent<Animator>();
         m_lastPlayerPosition = transform.position;
@@ -45,13 +46,12 @@ public class CharacterMovement : MonoBehaviour
     private void Update()
     {
         m_slopeAngle = UpdateSlopeAngle();
-
-        //m_characterController.Move(AdjustedVelocityToSlope(m_playerMovementDirection) * m_walkSpeed * Time.deltaTime);
+        Debug.Log(PlayerMovementDirection);
 
         DeltaPlayerMovement = transform.position - m_lastPlayerPosition;
         m_lastPlayerPosition = transform.position;
 
-        HandleRotation();
+        //HandleRotation();
         HandleGravity();
 
     }
@@ -107,17 +107,9 @@ public class CharacterMovement : MonoBehaviour
 
     private void HandleGravity()
     {
-        //float gravity;
-        //if(m_characterController.isGrounded)
-        //{
-        //    gravity = -.05f;
-        //    m_playerMovementDirection.y = gravity;
-        //}
-        //else
-        //{
-        //    gravity = -0.1f;
-        //    m_playerMovementDirection.y += gravity;
-        //}
+        float gravity = -0.1f;
+        m_playerMovementDirection.y += gravity;
+        
     }
 
 
