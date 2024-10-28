@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
 public class RigController : MonoBehaviour
 {
 
@@ -11,6 +12,8 @@ public class RigController : MonoBehaviour
 
     [SerializeField] 
     bool m_debugMode;
+
+    private Animator m_animator;
     [HideInInspector]
     public ActiveRayHeightEnum ActiveRayHeight = ActiveRayHeightEnum.None;
     public Action<ActiveRayHeightEnum> ActiveRayHeightChanged;
@@ -21,6 +24,7 @@ public class RigController : MonoBehaviour
     private void Awake()
     {
         ActiveRayHeightChanged += OnActiveRayHeightChanged;
+        m_animator = GetComponent<Animator>();
         TryGetComponent<CharacterMovement>(out m_characterMovement);
         if (m_characterMovement == null)
         {
@@ -30,6 +34,7 @@ public class RigController : MonoBehaviour
         foreach(TerrainDetectorRay ray in m_TerrainDetectorRays)
         {
             ray.RigController = this;
+            ray.Animator = m_animator;
         }
     }
     void Update()
@@ -46,7 +51,6 @@ public class RigController : MonoBehaviour
             }
         } 
     }
-
 
     private void OnDrawGizmosSelected()
     {
@@ -66,10 +70,16 @@ public class RigController : MonoBehaviour
             Debug.Log(ActiveRayHeight);
         }
     }
+
+
+    public void FootIK(AvatarIKGoal controlledFoot, RaycastHit hitinfo)
+    {
+    }
     public enum ActiveRayHeightEnum
     {
         None,
         KneeHeight,
         Hipheight
     }
+
 }

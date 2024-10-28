@@ -7,11 +7,13 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CharacterController))]
+[RequireComponent (typeof(Rigidbody))]
 [RequireComponent(typeof(Animator))]
 public class CharacterMovement : MonoBehaviour
 {
     private InputSystem_Actions m_inputActions;
-    private CharacterController m_characterController;
+    //private CharacterController m_characterController;
+    private Rigidbody m_Rigidbody;
     private Animator m_animator;
     private Ray m_slopeCheckRay;
 
@@ -33,7 +35,8 @@ public class CharacterMovement : MonoBehaviour
     public bool IsMoving => m_isMoving;
     private void Awake()
     {
-        m_characterController = GetComponent<CharacterController>();
+        m_Rigidbody = GetComponent<Rigidbody>();
+        //m_characterController = GetComponent<CharacterController>();
         m_animator = GetComponent<Animator>();
         m_lastPlayerPosition = transform.position;
 
@@ -43,7 +46,7 @@ public class CharacterMovement : MonoBehaviour
     {
         m_slopeAngle = UpdateSlopeAngle();
 
-        m_characterController.Move(AdjustedVelocityToSlope(m_playerMovementDirection) * m_walkSpeed * Time.deltaTime);
+        //m_characterController.Move(AdjustedVelocityToSlope(m_playerMovementDirection) * m_walkSpeed * Time.deltaTime);
 
         DeltaPlayerMovement = transform.position - m_lastPlayerPosition;
         m_lastPlayerPosition = transform.position;
@@ -55,14 +58,13 @@ public class CharacterMovement : MonoBehaviour
     public float UpdateSlopeAngle()
     {
         m_slopeCheckRay = new Ray(transform.position, Vector3.down);
-        if (Physics.Raycast(m_slopeCheckRay, out RaycastHit hitInfo, m_characterController.height / 2 + 0.2f))
+        if (Physics.Raycast(m_slopeCheckRay, out RaycastHit hitInfo))
         {
             Debug.DrawRay(hitInfo.point, hitInfo.normal, Color.yellow);
             return Mathf.Atan(Mathf.Sqrt(Mathf.Pow(hitInfo.normal.x, 2) + Mathf.Pow(hitInfo.normal.z, 2)) / hitInfo.normal.y) * Mathf.Rad2Deg;
         }
         return 180;
     }
-
     private void SubscribeToInputActions()
     {
         m_inputActions = new InputSystem_Actions();
@@ -105,23 +107,23 @@ public class CharacterMovement : MonoBehaviour
 
     private void HandleGravity()
     {
-        float gravity;
-        if(m_characterController.isGrounded)
-        {
-            gravity = -.05f;
-            m_playerMovementDirection.y = gravity;
-        }
-        else
-        {
-            gravity = -0.1f;
-            m_playerMovementDirection.y += gravity;
-        }
+        //float gravity;
+        //if(m_characterController.isGrounded)
+        //{
+        //    gravity = -.05f;
+        //    m_playerMovementDirection.y = gravity;
+        //}
+        //else
+        //{
+        //    gravity = -0.1f;
+        //    m_playerMovementDirection.y += gravity;
+        //}
     }
 
 
     private Vector3 AdjustedVelocityToSlope(Vector3 velocity)
     {
-        if(Physics.Raycast(m_slopeCheckRay, out RaycastHit hitInfo, m_characterController.height / 2 + 0.2f))
+        if(Physics.Raycast(m_slopeCheckRay, out RaycastHit hitInfo))
         {
             var slopeRotation = Quaternion.FromToRotation(Vector3.up, hitInfo.normal);
             var adjustedVelocity = slopeRotation * velocity;

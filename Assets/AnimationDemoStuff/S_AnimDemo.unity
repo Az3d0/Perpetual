@@ -465,9 +465,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e944794284dccd4eb44b4acb4b5a207, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_rayDirection: 0
+  m_rayDirection: 1
   m_rayLength: 0.5
-  RayDirectionVector: {x: 0, y: 0, z: 1}
+  RayDirectionVector: {x: 0, y: -1, z: 0}
+  RigController: {fileID: 0}
+  controlledFoot: 0
+--- !u!1 &957074520 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -2084811680363313996, guid: 29aae15c4574387489220bbf05490812, type: 3}
+  m_PrefabInstance: {fileID: 2459413392727471940}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &957074522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 957074520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40602b1d02905bd409393eac9c79d1f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_rayDirection: 1
+  m_rayLength: 0.25
+  RayDirectionVector: {x: 0, y: -1, z: 0}
   RigController: {fileID: 0}
 --- !u!1 &1092064320
 GameObject:
@@ -623,6 +645,27 @@ Transform:
   - {fileID: 234398292429475295}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1932892320 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -751476226918971245, guid: 29aae15c4574387489220bbf05490812, type: 3}
+  m_PrefabInstance: {fileID: 2459413392727471940}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1932892321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1932892320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40602b1d02905bd409393eac9c79d1f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_rayDirection: 1
+  m_rayLength: 0.25
+  RayDirectionVector: {x: 0, y: -1, z: 0}
+  RigController: {fileID: 0}
 --- !u!1 &2042661955 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 29aae15c4574387489220bbf05490812, type: 3}
@@ -650,10 +693,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e944794284dccd4eb44b4acb4b5a207, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_rayDirection: 0
+  m_rayDirection: 1
   m_rayLength: 0.5
-  RayDirectionVector: {x: 0, y: 0, z: 1}
+  RayDirectionVector: {x: 0, y: -1, z: 0}
   RigController: {fileID: 0}
+  controlledFoot: 1
 --- !u!4 &234398292429475295
 Transform:
   m_ObjectHideFlags: 0
@@ -697,7 +741,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 29aae15c4574387489220bbf05490812, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.041
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 29aae15c4574387489220bbf05490812, type: 3}
       propertyPath: m_LocalPosition.z
@@ -809,9 +853,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -6170625038081293824, guid: 29aae15c4574387489220bbf05490812, type: 3}
       insertIndex: -1
       addedObject: {fileID: 680295329}
+    - targetCorrespondingSourceObject: {fileID: -2084811680363313996, guid: 29aae15c4574387489220bbf05490812, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 957074522}
     - targetCorrespondingSourceObject: {fileID: -4332706925441422008, guid: 29aae15c4574387489220bbf05490812, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2098157610}
+    - targetCorrespondingSourceObject: {fileID: -751476226918971245, guid: 29aae15c4574387489220bbf05490812, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1932892321}
   m_SourcePrefab: {fileID: 100100000, guid: 29aae15c4574387489220bbf05490812, type: 3}
 --- !u!143 &4163077006327602156
 CharacterController:
@@ -831,7 +881,7 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 1.78
+  m_Height: 1.52
   m_Radius: 0.5
   m_SlopeLimit: 45
   m_StepOffset: 0.3
@@ -919,6 +969,8 @@ MonoBehaviour:
   - {fileID: 680295329}
   - {fileID: 2098157610}
   - {fileID: 586312189}
+  - {fileID: 957074522}
+  - {fileID: 1932892321}
   m_debugMode: 1
   ActiveRayHeight: 0
 --- !u!114 &8869833028179661528

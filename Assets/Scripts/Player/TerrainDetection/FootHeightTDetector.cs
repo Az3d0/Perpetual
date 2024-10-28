@@ -1,16 +1,9 @@
 using UnityEngine;
 
-public class FootHeightTDetector : MonoBehaviour
+public class FootHeightTDetector : TerrainDetectorRay
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    protected override void OnHitDetected(RaycastHit hitinfo)
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        base.OnHitDetected(hitinfo);
     }
 }

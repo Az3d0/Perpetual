@@ -7,22 +7,28 @@ using UnityEngine;
 public class TerrainDetectorRay : MonoBehaviour
 {
     private Ray m_ray;
-    [SerializeField] private RayDirectionEnum m_rayDirection = RayDirectionEnum.Forward;
-    [SerializeField] private float m_rayLength = 0.5f;
+    private RaycastHit m_hitinfo;
 
-    
+    [SerializeField] 
+    private RayDirectionEnum m_rayDirection = RayDirectionEnum.Forward;
+    [SerializeField] 
+    private float m_rayLength = 0.5f;
+
+    [HideInInspector]
     public Vector3 RayDirectionVector;
     public Action<RaycastHit> TerrainDetected;
 
+    //assign this by adding TerrainDetectorRays to RigController
     [HideInInspector]
     public RigController RigController;
-
+    [HideInInspector]
+    public Animator Animator;
     public Ray Ray => m_ray;
+    public RaycastHit Hitinfo => m_hitinfo;
     public RayDirectionEnum RayDirection => m_rayDirection;
 
     private void OnValidate()
     {
-        Debug.Log(m_rayDirection.ToString());
         switch (m_rayDirection)
         {
             case RayDirectionEnum.Forward:
@@ -71,6 +77,7 @@ public class TerrainDetectorRay : MonoBehaviour
     }
     protected virtual void OnHitDetected(RaycastHit hitinfo)
     {
+        m_hitinfo = hitinfo;
     }
 }
 
