@@ -1104,6 +1104,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""MovementDirection"",
+                    ""type"": ""Value"",
+                    ""id"": ""71559ecd-37b9-4856-ac08-9418b2524105"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -1126,6 +1135,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
                     ""action"": ""RightLeg"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5741512b-b98d-468d-aff9-39bd212207bc"",
+                    ""path"": ""<Gamepad>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""MovementDirection"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1226,6 +1246,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_PlayerMovement = asset.FindActionMap("PlayerMovement", throwIfNotFound: true);
         m_PlayerMovement_LeftLeg = m_PlayerMovement.FindAction("LeftLeg", throwIfNotFound: true);
         m_PlayerMovement_RightLeg = m_PlayerMovement.FindAction("RightLeg", throwIfNotFound: true);
+        m_PlayerMovement_MovementDirection = m_PlayerMovement.FindAction("MovementDirection", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
@@ -1579,12 +1600,14 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private List<IPlayerMovementActions> m_PlayerMovementActionsCallbackInterfaces = new List<IPlayerMovementActions>();
     private readonly InputAction m_PlayerMovement_LeftLeg;
     private readonly InputAction m_PlayerMovement_RightLeg;
+    private readonly InputAction m_PlayerMovement_MovementDirection;
     public struct PlayerMovementActions
     {
         private @InputSystem_Actions m_Wrapper;
         public PlayerMovementActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
         public InputAction @LeftLeg => m_Wrapper.m_PlayerMovement_LeftLeg;
         public InputAction @RightLeg => m_Wrapper.m_PlayerMovement_RightLeg;
+        public InputAction @MovementDirection => m_Wrapper.m_PlayerMovement_MovementDirection;
         public InputActionMap Get() { return m_Wrapper.m_PlayerMovement; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1600,6 +1623,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @RightLeg.started += instance.OnRightLeg;
             @RightLeg.performed += instance.OnRightLeg;
             @RightLeg.canceled += instance.OnRightLeg;
+            @MovementDirection.started += instance.OnMovementDirection;
+            @MovementDirection.performed += instance.OnMovementDirection;
+            @MovementDirection.canceled += instance.OnMovementDirection;
         }
 
         private void UnregisterCallbacks(IPlayerMovementActions instance)
@@ -1610,6 +1636,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @RightLeg.started -= instance.OnRightLeg;
             @RightLeg.performed -= instance.OnRightLeg;
             @RightLeg.canceled -= instance.OnRightLeg;
+            @MovementDirection.started -= instance.OnMovementDirection;
+            @MovementDirection.performed -= instance.OnMovementDirection;
+            @MovementDirection.canceled -= instance.OnMovementDirection;
         }
 
         public void RemoveCallbacks(IPlayerMovementActions instance)
@@ -1706,5 +1735,6 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     {
         void OnLeftLeg(InputAction.CallbackContext context);
         void OnRightLeg(InputAction.CallbackContext context);
+        void OnMovementDirection(InputAction.CallbackContext context);
     }
 }

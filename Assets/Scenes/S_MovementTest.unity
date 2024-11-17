@@ -372,6 +372,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_leftHip: {fileID: 1524511678}
   m_rightHip: {fileID: 14291694}
+  m_legGroundedTreshHold: 0.2
 --- !u!1 &1524511678 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3135921509060577837, guid: 29aae15c4574387489220bbf05490812, type: 3}

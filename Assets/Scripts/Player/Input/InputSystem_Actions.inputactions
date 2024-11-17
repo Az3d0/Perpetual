@@ -1082,6 +1082,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "MovementDirection",
+                    "type": "Value",
+                    "id": "71559ecd-37b9-4856-ac08-9418b2524105",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -1104,6 +1113,17 @@
                     "processors": "",
                     "groups": ";Gamepad",
                     "action": "RightLeg",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5741512b-b98d-468d-aff9-39bd212207bc",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "MovementDirection",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
