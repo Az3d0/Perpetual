@@ -70,9 +70,9 @@ public class CharacterMovement : MonoBehaviour
         m_inputActions = new InputSystem_Actions();
         m_inputActions.Enable();
 
-        m_inputActions.Player.Move.performed += OnMoveAction;
-        m_inputActions.Player.Move.canceled += OnMoveAction;
-        m_inputActions.Player.Jump.started += OnJumpAction;
+        m_inputActions.DefaultPlayer.Move.performed += OnMoveAction;
+        m_inputActions.DefaultPlayer.Move.canceled += OnMoveAction;
+        m_inputActions.DefaultPlayer.Jump.started += OnJumpAction;
     }
 
     private void OnJumpAction(InputAction.CallbackContext context)
