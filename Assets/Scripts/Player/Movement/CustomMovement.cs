@@ -14,15 +14,27 @@ public class CustomMovement : MonoBehaviour
     private GameObject m_rightHip;
 
     /// <summary>
-    /// Change this value to adjust the range of input values considered as the foot being grounded. 0 means only a fully held trigger will count as a grounded foot.
+    /// Adjusts the leeway for the input the game accepts as the leg being fully extended. 0 means only a fully held trigger will count as a grounded foot.
     /// </summary>
     [SerializeField]
-    private float m_footGroundedTreshHold = 0;
+    [Range(0,1)]
+    private float m_triggerDeadZone = 0;
 
+    [SerializeField]
+    private float m_footMovementRange = .45f;
+
+    [SerializeField]
+    private float m_footGroundedTreshhold = 0.1f;
     private Leg m_leftLeg;
     private Leg m_rightLeg;
 
-    private Vector2 m_movementDirection;
+    private Vector3 m_movementDirection;
+    private float m_verticalDirection = 0;
+
+    public float FootGroundedTreshhold => m_footGroundedTreshhold;
+    public float FootMovementRange => m_footMovementRange;
+    public Vector3 MovementDirection => m_movementDirection;
+    public float TriggerDeadZone => m_triggerDeadZone;
 
     private void Awake()
     {
@@ -31,27 +43,44 @@ public class CustomMovement : MonoBehaviour
 
         if (m_leftLeg == null && m_rightLeg == null)
         {
-            m_leftLeg = new Leg(m_leftHip, m_inputActions.PlayerMovement.LeftLeg, m_footGroundedTreshHold);
-            m_rightLeg = new Leg(m_rightHip, m_inputActions.PlayerMovement.RightLeg, m_footGroundedTreshHold);
+            m_leftLeg = new Leg(m_leftHip, m_inputActions.PlayerMovement.LeftLeg, this);
+            m_rightLeg = new Leg(m_rightHip, m_inputActions.PlayerMovement.RightLeg, this);
         }
 
         m_inputActions.PlayerMovement.MovementDirection.performed += OnDirectionIndicated;
     }
 
+    private void Update()
+    {
+        m_leftLeg.UpdateLegValues();
+        m_rightLeg.UpdateLegValues();
+
+        if (m_leftLeg.IsFootGrounded())
+        {
+            m_leftLeg.GroundFoot();
+        }
+        if (m_rightLeg.IsFootGrounded())
+        {
+            m_rightLeg.GroundFoot(); 
+        }
+    }
     private void OnDirectionIndicated(InputAction.CallbackContext context)
     {
-        m_movementDirection = context.ReadValue<Vector2>();
+        Vector2 horizontalDirection = context.ReadValue<Vector2>();
+        m_movementDirection = new Vector3(horizontalDirection.x, m_verticalDirection, horizontalDirection.y);
+
+        Debug.DrawRay(gameObject.transform.position, m_movementDirection, Color.red);
+
+        m_leftLeg.MoveFoot();
+        m_rightLeg.MoveFoot();
     }
 
     private void OnDrawGizmos()
     {
         if (m_leftLeg != null && m_rightLeg != null)
         {
-            Gizmos.DrawSphere(m_leftLeg.TargetFootLocalPosition, 0.1f);
-            //Gizmos.DrawSphere(m_leftLeg.TargetKneeLocalPosition, 0.1f);
-
-            Gizmos.DrawSphere(m_rightLeg.TargetFootLocalPosition, 0.1f);
-            //Gizmos.DrawSphere(m_rightLeg.TargetKneeLocalPosition, 0.1f);
+            m_leftLeg.GizmoDebugLeg();
+            m_rightLeg.GizmoDebugLeg();
         }
 
     }
